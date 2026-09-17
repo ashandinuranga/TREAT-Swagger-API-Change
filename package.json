@@ -1,0 +1,22 @@
+{
+  "name": "treat-swagger",
+  "version": "1.0.0",
+  "description": "Mock healthcare API with Swagger docs (login, hospitals, patients, encounters) - test data only, no database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["swagger", "openapi", "mock-api"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "js-yaml": "^5.4.2",
+    "jsonwebtoken": "^9.0.3",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

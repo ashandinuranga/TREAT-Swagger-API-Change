@@ -1,0 +1,251 @@
+openapi: 3.0.3
+info:
+  title: Treat-Swagger API
+  description: >
+    A mock healthcare API for testing purposes. Provides login authentication,
+    hospital names, patient details, and encounter details. Uses in-memory
+    test data — no database required.
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Base API path
+
+tags:
+  - name: Auth
+    description: Login and token generation
+  - name: Hospitals
+    description: Hospital information
+  - name: Patients
+    description: Patient records
+  - name: Encounters
+    description: Patient encounter/visit records
+
+paths:
+  /login:
+    post:
+      tags: [Auth]
+      summary: Login and get an access token
+      description: |
+        Test credentials:
+        - username: `admin`, password: `password123`
+        - username: `testuser`, password: `test@123`
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /hospitals:
+    get:
+      tags: [Hospitals]
+      summary: Get list of hospital names
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of hospitals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hospital'
+        '401':
+          description: Unauthorized
+
+  /patients:
+    get:
+      tags: [Patients]
+      summary: Get list of patients
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of patients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Patient'
+        '401':
+          description: Unauthorized
+
+  /patients/{id}:
+    get:
+      tags: [Patients]
+      summary: Get details of a specific patient
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: P001
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        '404':
+          description: Patient not found
+        '401':
+          description: Unauthorized
+
+  /encounters:
+    get:
+      tags: [Encounters]
+      summary: Get list of encounters
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of encounters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Encounter'
+        '401':
+          description: Unauthorized
+
+  /encounters/{id}:
+    get:
+      tags: [Encounters]
+      summary: Get details of a specific encounter
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: E001
+      responses:
+        '200':
+          description: Encounter details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Encounter'
+        '404':
+          description: Encounter not found
+        '401':
+          description: Unauthorized
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: admin
+        password:
+          type: string
+          example: password123
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        expiresIn:
+          type: string
+          example: 1h
+
+    Hospital:
+      type: object
+      properties:
+        hospital_id:
+          type: string
+          example: H001
+        name:
+          type: string
+          example: Negombo General Hospital
+        city:
+          type: string
+          example: Negombo
+
+    Patient:
+      type: object
+      properties:
+        id:
+          type: string
+          example: P001
+        name:
+          type: string
+          example: Nimal Perera
+        age:
+          type: integer
+          example: 45
+        gender:
+          type: string
+          example: Male
+        hospitalId:
+          type: string
+          example: H001
+        contact:
+          type: string
+          example: "0771234567"
+
+    Encounter:
+      type: object
+      properties:
+        id:
+          type: string
+          example: E001
+        patientId:
+          type: string
+          example: P001
+        hospitalId:
+          type: string
+          example: H001
+        date:
+          type: string
+          format: date
+          example: "2026-09-01"
+        reason:
+          type: string
+          example: Fever and cough
+        doctor:
+          type: string
+          example: Dr. R. Jayasinghe
+        status:
+          type: string
+          example: Completed
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid username or password
