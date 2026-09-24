@@ -21,6 +21,10 @@ const swaggerDocument = YAML.load(
 );
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+app.get("/api/swagger.json", (req, res) => {
+  res.json(swaggerDocument);
+});
+
 // ---------- Auth middleware ----------
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
