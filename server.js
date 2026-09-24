@@ -25,6 +25,10 @@ app.get("/api/swagger.json", (req, res) => {
   res.json(swaggerDocument);
 });
 
+app.get("/api/swagger.json", (req, res) => {
+  res.json(swaggerDocument);
+});
+
 // ---------- Auth middleware ----------
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
